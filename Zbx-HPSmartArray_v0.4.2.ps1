@@ -151,17 +151,17 @@ function Get-Health() {
                     "main" {return ($ctrl_status[0] -replace ".+:\s")}
                     "cache" {return ($ctrl_status[1] -replace ".+:\s");}
                     "batt" {
-					    # Check if the cache battery/capacitor is present - if so this shouldn't be 0
-						#
-					    $capacitorCount = $ctrl_status[2] -replace ".+:\s";
-						
-						if ($capacitorCount -gt 0)
-						{
-						    return "OK";
-						}
-						
-						return "Problem";
-					}
+                        # Check if the cache battery/capacitor is present - if so this shouldn't be 0
+                        #
+                        $capacitorCount = $ctrl_status[2] -replace ".+:\s";
+                        
+                        if ($capacitorCount -gt 0)
+                        {
+                            return "OK";
+                        }
+                        
+                        return "Problem";
+                    }
                 }
             } else {
                 return ($ctrl_status -replace ".+:\s")
