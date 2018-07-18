@@ -61,7 +61,7 @@ if ($version) {
 }
 
 # HP Array Configuration Utility location
-$ssacli = "$env:ProgramFiles\Smart Storage Administrator\ssacli\bin\ssacli.exe"
+$ssacli = "$env:ProgramFiles\hp\hpssacli\bin\hpssacli.exe"
 if (! (Test-Path $ssacli)) {
     $ssacli = "$env:ProgramFiles\Compaq\Hpacucli\Bin\hpacucli.exe"
 }
@@ -126,7 +126,7 @@ function Make-LLD() {
             }
         }
     }
-    return ConvertTo-Json @{"data" = $lld_obj_list} -Compress
+    return ConvertTo-Json @{"data" = $lld_obj_list}
 }
 
 function Get-Health() {
@@ -145,12 +145,23 @@ function Get-Health() {
 
     switch ($part) {
         "ctrl" {
-            $ctrl_status = & "$ssacli" "ctrl $($ctrid_type)=$($ctrlid) show status".Split(" ") | Where-Object {$_ -match "controller status|cache status|battery.*status"}
+            $ctrl_status = & "$ssacli" "ctrl $($ctrid_type)=$($ctrlid) show detail".Split(" ") | Where-Object {$_ -match "controller status|cache status|capacitor count"}
             if ($ctrl_status.Length -eq 3) {
                 switch ($partid) {
                     "main" {return ($ctrl_status[0] -replace ".+:\s")}
-                    "cache" {return ($ctrl_status[1] -replace ".+:\s")}
-                    "batt" {return ($ctrl_status[2] -replace ".+:\s")}
+                    "cache" {return ($ctrl_status[1] -replace ".+:\s");}
+                    "batt" {
+					    # Check if the cache battery/capacitor is present - if so this shouldn't be 0
+						#
+					    $capacitorCount = $ctrl_status[2] -replace ".+:\s";
+						
+						if ($capacitorCount -gt 0)
+						{
+						    return "OK";
+						}
+						
+						return "Problem";
+					}
                 }
             } else {
                 return ($ctrl_status -replace ".+:\s")
