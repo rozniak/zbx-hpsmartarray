@@ -146,20 +146,20 @@ function Get-Health() {
     switch ($part) {
         "ctrl" {
             $ctrl_status = (& "$ssacli" "ctrl $($ctrid_type)=$($ctrlid) show detail".Split(" ")).Split([Environment]::NewLine)
-			
-			switch ($partid) {
+            
+            switch ($partid) {
                 "main" {
-				    return Find-Value "Controller Status" $ctrl_status
-				}
+                    return Find-Value "Controller Status" $ctrl_status
+                }
                 "cache" {
-				    return Find-Value "Cache Status" $ctrl_status
-			    }
+                    return Find-Value "Cache Status" $ctrl_status
+                }
                 "batt" {
                     return Find-Value "Battery/Capacitor Status" $ctrl_status
                 }
             }
-			
-			return "Find Value Failed"
+            
+            return "Find Value Failed"
         }
         "ld" {
             $ld_status = & "$ssacli" "ctrl $($ctrid_type)=$($ctrlid) ld $($partid) show status".Split() | Where-Object {$_ -match 'logicaldrive \d'}
@@ -174,21 +174,21 @@ function Get-Health() {
 
 function Find-Value() {
     param (
-	    [string]$key,
-		[array]$arr
-	)
-	
-	foreach ($str in $arr)
-	{
-	    $split = $str.Split(":")
-		
-		if ($split[0].Trim() -eq $key)
-		{
-		    return $split[1].Trim()
-		}
-	}
-	
-	return "Undefined"
+        [string]$key,
+        [array]$arr
+    )
+    
+    foreach ($str in $arr)
+    {
+        $split = $str.Split(":")
+        
+        if ($split[0].Trim() -eq $key)
+        {
+            return $split[1].Trim()
+        }
+    }
+    
+    return "Undefined"
 }
 
 switch ($action) {
