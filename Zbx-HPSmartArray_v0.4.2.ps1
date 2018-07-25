@@ -145,27 +145,21 @@ function Get-Health() {
 
     switch ($part) {
         "ctrl" {
-            $ctrl_status = & "$ssacli" "ctrl $($ctrid_type)=$($ctrlid) show detail".Split(" ") | Where-Object {$_ -match "controller status|cache status|capacitor count"}
-            if ($ctrl_status.Length -eq 3) {
-                switch ($partid) {
-                    "main" {return ($ctrl_status[0] -replace ".+:\s")}
-                    "cache" {return ($ctrl_status[1] -replace ".+:\s");}
-                    "batt" {
-                        # Check if the cache battery/capacitor is present - if so this shouldn't be 0
-                        #
-                        $capacitorCount = $ctrl_status[2] -replace ".+:\s";
-                        
-                        if ($capacitorCount -gt 0)
-                        {
-                            return "OK";
-                        }
-                        
-                        return "Problem";
-                    }
+            $ctrl_status = (& "$ssacli" "ctrl $($ctrid_type)=$($ctrlid) show detail".Split(" ")).Split([Environment]::NewLine)
+			
+			switch ($partid) {
+                "main" {
+				    return Find-Value "Controller Status" $ctrl_status
+				}
+                "cache" {
+				    return Find-Value "Cache Status" $ctrl_status
+			    }
+                "batt" {
+                    return Find-Value "Battery/Capacitor Status" $ctrl_status
                 }
-            } else {
-                return ($ctrl_status -replace ".+:\s")
             }
+			
+			return "Find Value Failed"
         }
         "ld" {
             $ld_status = & "$ssacli" "ctrl $($ctrid_type)=$($ctrlid) ld $($partid) show status".Split() | Where-Object {$_ -match 'logicaldrive \d'}
@@ -176,6 +170,25 @@ function Get-Health() {
             return ($pd_status -replace '.+\:\s')
         }
     }
+}
+
+function Find-Value() {
+    param (
+	    [string]$key,
+		[array]$arr
+	)
+	
+	foreach ($str in $arr)
+	{
+	    $split = $str.Split(":")
+		
+		if ($split[0].Trim() -eq $key)
+		{
+		    return $split[1].Trim()
+		}
+	}
+	
+	return "Undefined"
 }
 
 switch ($action) {
