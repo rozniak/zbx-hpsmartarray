@@ -1,3 +1,0 @@
-
-############### USER PARAMETERS ###############
-UserParameter=hp.smartarray[*],powershell -NoProfile -NoLogo -File "%ProgramFiles%\Zabbix Agent\HPSMARTARRAY\Zbx-HPSmartArray_v0.4.2.ps1" $1 $2 $3 $4
