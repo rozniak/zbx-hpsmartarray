@@ -157,6 +157,20 @@ function Get-Health() {
                 "batt" {
                     return Find-Value "Battery/Capacitor Status" $ctrl_status
                 }
+                "summary" {
+                    $checkController = Find-Value "Controller Status" $ctrl_status -eq "OK"
+                    $checkCache      = Find-Value "Cache Status" $ctrl_status -eq "OK"
+                    $checkBattery    = Find-Value "Battery/Capacitor Status" $ctrl_status -eq "OK"
+
+                    if ($checkController -and $checkCache -and $checkBattery)
+                    {
+                        return 0; # OK
+                    }
+                    else
+                    {
+                        return 1; # Failed
+                    }
+                }
             }
             
             return "Find Value Failed"
