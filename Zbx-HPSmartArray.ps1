@@ -200,8 +200,31 @@ function Get-Health() {
             return ($ld_status -replace '.+:\s')
         }
         "pd" {
-            $pd_status = & "$ssacli" "ctrl $($ctrid_type)=$($ctrlid) pd $($partid) show status".Split() | Where-Object {$_ -match 'physicaldrive \d'}
-            return ($pd_status -replace '.+\:\s')
+            # Check if we want a summary, if not then just try grabbing the disk itself
+            #
+            if ($partid.ToLower() -eq "summary")
+            {
+                $pd_status = & "$ssacli" "ctrl $($ctrid_type)=$($ctrlid) pd all show status".Split()
+                $pd_status = $pd_status.Trim().Split([Environment]::NewLine)
+
+                foreach ($pd_condition in $pd_status)
+                {
+                    if ($pd_condition -match "physicaldrive \S+ \(.+\)\: (?<Status>.+)")
+                    {
+                        if ($Matches.Status -ne "OK")
+                        {
+                            return 1 # Some warning or error- needs looking at
+                        }
+                    }
+                }
+
+                return 0 # OK
+            }
+            else
+            {
+                $pd_status = & "$ssacli" "ctrl $($ctrid_type)=$($ctrlid) pd $($partid) show status".Split() | Where-Object {$_ -match 'physicaldrive \d'}
+                return ($pd_status -replace '.+\:\s')
+            }
         }
     }
 }
