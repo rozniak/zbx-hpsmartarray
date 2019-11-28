@@ -47,7 +47,7 @@
 
 Param (
     [switch]$version = $False,
-    [ValidateSet("lld","health")][Parameter(Position=0, Mandatory=$True)][string]$action,
+    [ValidateSet("lld","health","fw","model")][Parameter(Position=0, Mandatory=$True)][string]$action,
     [ValidateSet("ctrl","ld","pd")][Parameter(Position=1, Mandatory=$True)][string]$part,
     [string][Parameter(Position=2, Mandatory=$False)]$ctrlid,
     [string][Parameter(Position=3, Mandatory=$False)]$partid,
@@ -233,6 +233,90 @@ function Get-Health() {
     }
 }
 
+function Get-Info() {
+    param (
+        [string]$key,
+        [string]$part,
+        [string]$ctrlid,
+        [string]$partid
+    )
+
+    $cliOutput   = [String]::Empty;
+    $ctrlid_type = [String]::Empty;
+    $readFromIdx = -1;
+
+    # Determine which controller id is provided
+    if ($ctrlid -match "^\d{1,}$") {
+        $ctrid_type = "slot"
+    } else {
+        $ctrid_type = "sn"
+    }
+
+    # Determine where to start reading data from
+    #
+    switch ($part)
+    {
+        "ctrl" {
+            $cliOutput = (& "$ssacli" "ctrl $($ctrid_type)=$($ctrlid) show detail".Split(" ")).Split([Environment]::NewLine);
+            $readFromIdx = 2
+        }
+
+        "pd" {
+            $cliOutput = (& "$ssacli" "ctrl $($ctrid_type)=$($ctrlid) pd $($partid) show detail".Split(" ")).Split([Environment]::NewLine);
+
+            # Look for the string "physicaldrive $partid" in the array
+            #
+            $i = 0;
+
+            while ($readFromIdx -eq -1 -and $i -le $cliOutput.Length)
+            {
+                if ($cliOutput[$i].Trim() -eq "physicaldrive $($partid)")
+                {
+                    $readFromIdx = $i + 1
+                }
+
+                $i++
+            }
+        }
+    }
+
+    # Pull in the relevant data
+    #
+    $valueMap = New-Object "System.Collections.Generic.Dictionary[string, object]"
+
+    while ($TRUE)
+    {
+        $line = $cliOutput[$i].Trim()
+
+        if ([String]::IsNullOrWhiteSpace($line))
+        {
+            break
+        }
+
+        $valueSepIdx = $line.IndexOf(":")
+
+        $dKey = $line.Substring(0, $valueSepIdx)
+        $dValue = $line.Substring($valueSepIdx + 1).Trim()
+
+        $valueMap.Add($dKey, $dValue)
+
+        $i++
+    }
+
+    switch ($key)
+    {
+        "fw" {
+            return $valueMap["Firmware Revision"]
+        }
+
+        "model" {
+            return $valueMap["Model"]
+        }
+    }
+
+    return "Failed to retrieve information.";
+}
+
 function Find-Value() {
     param (
         [string]$key,
@@ -252,12 +336,18 @@ function Find-Value() {
     return "Undefined"
 }
 
-switch ($action) {
+switch -regex ($action) {
     "lld" {
         Write-Host $(Make-LLD -part $part)
+        break
     }
     "health" {
         Write-Host $(Get-Health -part $part -ctrlid $ctrlid -partid $partid)
+        break
+    }
+    "^(fw|model)$" {
+        Write-Host $(Get-Info -key $action -part $part -ctrlid $ctrlid -partid $partid)
+        break
     }
     default {Write-Host "ERROR: Wrong first argument: use 'lld' or 'health'"}
 }
