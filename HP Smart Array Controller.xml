@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>3.4</version>
-    <date>2018-07-04T11:54:14Z</date>
+    <date>2019-11-28T11:45:01Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -188,10 +188,110 @@
                             <application_prototypes/>
                             <master_item_prototype/>
                         </item_prototype>
+                        <item_prototype>
+                            <name>Smart Array Controller Summary status</name>
+                            <type>7</type>
+                            <snmp_community/>
+                            <snmp_oid/>
+                            <key>hp.smartarray[health,ctrl,{#CTRL.SLOT},summary]</key>
+                            <delay>{$UPDATE}</delay>
+                            <history>{$HISTORY}</history>
+                            <trends>0d</trends>
+                            <status>0</status>
+                            <value_type>3</value_type>
+                            <allowed_hosts/>
+                            <units/>
+                            <snmpv3_contextname/>
+                            <snmpv3_securityname/>
+                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                            <snmpv3_authpassphrase/>
+                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                            <snmpv3_privpassphrase/>
+                            <params/>
+                            <ipmi_sensor/>
+                            <authtype>0</authtype>
+                            <username/>
+                            <password/>
+                            <publickey/>
+                            <privatekey/>
+                            <port/>
+                            <description/>
+                            <inventory_link>0</inventory_link>
+                            <applications>
+                                <application>
+                                    <name>HP Smart Array Controllers</name>
+                                </application>
+                            </applications>
+                            <valuemap/>
+                            <logtimefmt/>
+                            <preprocessing/>
+                            <jmx_endpoint/>
+                            <application_prototypes/>
+                            <master_item_prototype/>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Smart Array Physical Drive Summary Status</name>
+                            <type>7</type>
+                            <snmp_community/>
+                            <snmp_oid/>
+                            <key>hp.smartarray[health,ld,{#CTRL.SLOT},summary]</key>
+                            <delay>{$UPDATE}</delay>
+                            <history>{$HISTORY}</history>
+                            <trends>0d</trends>
+                            <status>0</status>
+                            <value_type>3</value_type>
+                            <allowed_hosts/>
+                            <units/>
+                            <snmpv3_contextname/>
+                            <snmpv3_securityname/>
+                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                            <snmpv3_authpassphrase/>
+                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                            <snmpv3_privpassphrase/>
+                            <params/>
+                            <ipmi_sensor/>
+                            <authtype>0</authtype>
+                            <username/>
+                            <password/>
+                            <publickey/>
+                            <privatekey/>
+                            <port/>
+                            <description/>
+                            <inventory_link>0</inventory_link>
+                            <applications>
+                                <application>
+                                    <name>HP Smart Array Controllers</name>
+                                </application>
+                            </applications>
+                            <valuemap/>
+                            <logtimefmt/>
+                            <preprocessing/>
+                            <jmx_endpoint/>
+                            <application_prototypes/>
+                            <master_item_prototype/>
+                        </item_prototype>
                     </item_prototypes>
                     <trigger_prototypes>
                         <trigger_prototype>
-                            <expression>{HP Smart Array Monitoring:hp.smartarray[health,ctrl,{#CTRL.SLOT},batt].count(#5,OK,ne)}&gt;3</expression>
+                            <expression>{HP Smart Array Monitoring:hp.smartarray[health,ctrl,{#CTRL.SLOT},summary].last()}&lt;&gt;0</expression>
+                            <recovery_mode>0</recovery_mode>
+                            <recovery_expression/>
+                            <name>HP Smart Array Cache not OK on {HOST.NAME}</name>
+                            <correlation_mode>0</correlation_mode>
+                            <correlation_tag/>
+                            <url/>
+                            <status>0</status>
+                            <priority>4</priority>
+                            <description></description>
+                            <type>0</type>
+                            <manual_close>0</manual_close>
+                            <dependencies/>
+                            <tags/>
+                        </trigger_prototype>
+                        <trigger_prototype>
+                            <expression>{HP Smart Array Monitoring:hp.smartarray[health,ctrl,{#CTRL.SLOT},batt].count(#5,OK,ne)}&gt;3 and {HP Smart Array Monitoring:hp.smartarray[health,ctrl,{#CTRL.SLOT},batt].count(#5,Not Configured,ne)}&gt;3</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
                             <name>Smart Array Controller Battery status</name>
@@ -212,7 +312,7 @@
                             </tags>
                         </trigger_prototype>
                         <trigger_prototype>
-                            <expression>{HP Smart Array Monitoring:hp.smartarray[health,ctrl,{#CTRL.SLOT},cache].count(#5,OK,ne)}&gt;3</expression>
+                            <expression>{HP Smart Array Monitoring:hp.smartarray[health,ctrl,{#CTRL.SLOT},cache].count(#5,OK,ne)}&gt;3 and {HP Smart Array Monitoring:hp.smartarray[health,ctrl,{#CTRL.SLOT},cache].count(#5,Not Configured,ne)}&gt;3</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
                             <name>Smart Array Controller Cache status</name>
@@ -233,7 +333,7 @@
                             </tags>
                         </trigger_prototype>
                         <trigger_prototype>
-                            <expression>{HP Smart Array Monitoring:hp.smartarray[health,ctrl,{#CTRL.SLOT},main].count(#5,OK,ne)}&gt;3</expression>
+                            <expression>{HP Smart Array Monitoring:hp.smartarray[health,ctrl,{#CTRL.SLOT},main].count(#5,OK,ne)}&gt;3 and {HP Smart Array Monitoring:hp.smartarray[health,ctrl,{#CTRL.SLOT},main].count(#5,Not Configured,ne,0)}&gt;3</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
                             <name>Smart Array Controller Main status</name>
@@ -393,6 +493,48 @@
                     <description>Discovery all physical drives on HP Smart Array Controller.</description>
                     <item_prototypes>
                         <item_prototype>
+                            <name>Physical Drive {#PD.NUM} Firmware Revision</name>
+                            <type>7</type>
+                            <snmp_community/>
+                            <snmp_oid/>
+                            <key>hp.smartarray[fw,pd,{#CTRL.SLOT},&quot;{#PD.NUM}&quot;]</key>
+                            <delay>1h</delay>
+                            <history>2w</history>
+                            <trends>0</trends>
+                            <status>0</status>
+                            <value_type>1</value_type>
+                            <allowed_hosts/>
+                            <units/>
+                            <snmpv3_contextname/>
+                            <snmpv3_securityname/>
+                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                            <snmpv3_authpassphrase/>
+                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                            <snmpv3_privpassphrase/>
+                            <params/>
+                            <ipmi_sensor/>
+                            <authtype>0</authtype>
+                            <username/>
+                            <password/>
+                            <publickey/>
+                            <privatekey/>
+                            <port/>
+                            <description/>
+                            <inventory_link>0</inventory_link>
+                            <applications>
+                                <application>
+                                    <name>HP Smart Array Physical Drives</name>
+                                </application>
+                            </applications>
+                            <valuemap/>
+                            <logtimefmt/>
+                            <preprocessing/>
+                            <jmx_endpoint/>
+                            <application_prototypes/>
+                            <master_item_prototype/>
+                        </item_prototype>
+                        <item_prototype>
                             <name>Physical Drive {#PD.NUM} Status</name>
                             <type>7</type>
                             <snmp_community/>
@@ -421,6 +563,48 @@
                             <privatekey/>
                             <port/>
                             <description>Status of Physical Drive {#PD.NUM} on controller in slot {#CTRL.SLOT}.</description>
+                            <inventory_link>0</inventory_link>
+                            <applications>
+                                <application>
+                                    <name>HP Smart Array Physical Drives</name>
+                                </application>
+                            </applications>
+                            <valuemap/>
+                            <logtimefmt/>
+                            <preprocessing/>
+                            <jmx_endpoint/>
+                            <application_prototypes/>
+                            <master_item_prototype/>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Physical Drive {#PD.NUM} Model</name>
+                            <type>7</type>
+                            <snmp_community/>
+                            <snmp_oid/>
+                            <key>hp.smartarray[model,pd,{#CTRL.SLOT},&quot;{#PD.NUM}&quot;]</key>
+                            <delay>1h</delay>
+                            <history>2w</history>
+                            <trends>0</trends>
+                            <status>0</status>
+                            <value_type>1</value_type>
+                            <allowed_hosts/>
+                            <units/>
+                            <snmpv3_contextname/>
+                            <snmpv3_securityname/>
+                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                            <snmpv3_authpassphrase/>
+                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                            <snmpv3_privpassphrase/>
+                            <params/>
+                            <ipmi_sensor/>
+                            <authtype>0</authtype>
+                            <username/>
+                            <password/>
+                            <publickey/>
+                            <privatekey/>
+                            <port/>
+                            <description/>
                             <inventory_link>0</inventory_link>
                             <applications>
                                 <application>
