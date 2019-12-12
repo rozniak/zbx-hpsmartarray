@@ -47,7 +47,7 @@
 
 Param (
     [switch]$version = $False,
-    [ValidateSet("lld","health","fw","model")][Parameter(Position=0, Mandatory=$True)][string]$action,
+    [ValidateSet("lld","health","fw","model","hours")][Parameter(Position=0, Mandatory=$True)][string]$action,
     [ValidateSet("ctrl","ld","pd")][Parameter(Position=1, Mandatory=$True)][string]$part,
     [string][Parameter(Position=2, Mandatory=$False)]$ctrlid,
     [string][Parameter(Position=3, Mandatory=$False)]$partid,
@@ -312,6 +312,17 @@ function Get-Info() {
         "model" {
             return $valueMap["Model"]
         }
+
+        "hours" {
+            if ($valueMap.ContainsKey("Power On Hours"))
+            {
+                return $valueMap["Power On Hours"]
+            }
+            else
+            {
+                return 0
+            }
+        }
     }
 
     return "Failed to retrieve information.";
@@ -345,7 +356,7 @@ switch -regex ($action) {
         Write-Host $(Get-Health -part $part -ctrlid $ctrlid -partid $partid)
         break
     }
-    "^(fw|model)$" {
+    "^(fw|model|hours)$" {
         Write-Host $(Get-Info -key $action -part $part -ctrlid $ctrlid -partid $partid)
         break
     }
