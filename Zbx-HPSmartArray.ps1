@@ -190,6 +190,14 @@ function Get-Health() {
                     {
                         return 0; # OK
                     }
+                    elseif (
+                        $checkController -eq "Undefined" -and
+                        $checkController -eq "Undefined" -and
+                        $checkController -eq "Undefined"
+                    )
+                    {
+                        return 2; # Controller Not Set Up
+                    }
                     else
                     {
                         return 1; # Failed

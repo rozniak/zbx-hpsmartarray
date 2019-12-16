@@ -275,7 +275,7 @@
                     </item_prototypes>
                     <trigger_prototypes>
                         <trigger_prototype>
-                            <expression>{HP Smart Array Monitoring:hp.smartarray[health,ctrl,{#CTRL.SLOT},summary].last()}&lt;&gt;0</expression>
+                            <expression>{HP Smart Array Monitoring:hp.smartarray[health,ctrl,{#CTRL.SLOT},summary].last()}=1</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
                             <name>HP Smart Array Cache not OK on {HOST.NAME}</name>
@@ -291,7 +291,7 @@
                             <tags/>
                         </trigger_prototype>
                         <trigger_prototype>
-                            <expression>{HP Smart Array Monitoring:hp.smartarray[health,ctrl,{#CTRL.SLOT},batt].count(#5,OK,ne)}&gt;3 and {HP Smart Array Monitoring:hp.smartarray[health,ctrl,{#CTRL.SLOT},batt].count(#5,Not Configured,ne)}&gt;3</expression>
+                            <expression>{HP Smart Array Monitoring:hp.smartarray[health,ctrl,{#CTRL.SLOT},batt].regexp("^OK|Not Configured|Undefined)$"}=0</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
                             <name>Smart Array Controller Battery status</name>
@@ -312,7 +312,7 @@
                             </tags>
                         </trigger_prototype>
                         <trigger_prototype>
-                            <expression>{HP Smart Array Monitoring:hp.smartarray[health,ctrl,{#CTRL.SLOT},cache].count(#5,OK,ne)}&gt;3 and {HP Smart Array Monitoring:hp.smartarray[health,ctrl,{#CTRL.SLOT},cache].count(#5,Not Configured,ne)}&gt;3</expression>
+                            <expression>{HP Smart Array Monitoring:hp.smartarray[health,ctrl,{#CTRL.SLOT},cache].regexp("^(OK|Not Configured|Undefined)$")}=0</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
                             <name>Smart Array Controller Cache status</name>
@@ -333,7 +333,7 @@
                             </tags>
                         </trigger_prototype>
                         <trigger_prototype>
-                            <expression>{HP Smart Array Monitoring:hp.smartarray[health,ctrl,{#CTRL.SLOT},main].count(#5,OK,ne)}&gt;3 and {HP Smart Array Monitoring:hp.smartarray[health,ctrl,{#CTRL.SLOT},main].count(#5,Not Configured,ne,0)}&gt;3</expression>
+                            <expression>{HP Smart Array Monitoring:hp.smartarray[health,ctrl,{#CTRL.SLOT},main].regexp("^(OK|Not Configured|Undefined)$")}=0</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
                             <name>Smart Array Controller Main status</name>
