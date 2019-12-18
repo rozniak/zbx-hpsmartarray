@@ -178,9 +178,9 @@ function Get-Health() {
                     return Find-Value "Battery/Capacitor Status" $ctrl_status
                 }
                 "summary" {
-                    $checkController = Find-Value "Controller Status" $ctrl_status -eq "OK"
-                    $checkCache      = Find-Value "Cache Status" $ctrl_status -eq "OK"
-                    $checkBattery    = Find-Value "Battery/Capacitor Status" $ctrl_status -eq "OK"
+                    $checkController = Find-Value "Controller Status"        $ctrl_status
+                    $checkCache      = Find-Value "Cache Status"             $ctrl_status
+                    $checkBattery    = Find-Value "Battery/Capacitor Status" $ctrl_status
 
                     if (
                         $checkController -eq "OK" -and
@@ -191,9 +191,9 @@ function Get-Health() {
                         return 0; # OK
                     }
                     elseif (
-                        $checkController -eq "Undefined" -and
-                        $checkController -eq "Undefined" -and
-                        $checkController -eq "Undefined"
+                        $checkController -eq "^(Undefined|Not Configured)$" -or
+                        $checkController -eq "^(Undefined|Not Configured)$" -or
+                        $checkController -eq "^(Undefined|Not Configured)$"
                     )
                     {
                         return 2; # Controller Not Set Up
