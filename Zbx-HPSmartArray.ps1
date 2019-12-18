@@ -191,9 +191,9 @@ function Get-Health() {
                         return 0; # OK
                     }
                     elseif (
-                        $checkController -eq "^(Undefined|Not Configured)$" -or
-                        $checkController -eq "^(Undefined|Not Configured)$" -or
-                        $checkController -eq "^(Undefined|Not Configured)$"
+                        $checkController -match "^(Undefined|Not Configured)$" -or
+                        $checkController -match "^(Undefined|Not Configured)$" -or
+                        $checkController -match "^(Undefined|Not Configured)$"
                     )
                     {
                         return 2; # Controller Not Set Up
